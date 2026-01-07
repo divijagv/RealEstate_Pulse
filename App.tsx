@@ -181,7 +181,8 @@ const App: React.FC = () => {
               )}
             </div>
           </div>
-        </aside>
+        </div>
+      </aside>
 
         <div className="flex-1 space-y-6">
           {aiInsight && (
