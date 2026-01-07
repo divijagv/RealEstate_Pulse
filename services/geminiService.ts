@@ -2,7 +2,15 @@
 import { GoogleGenAI } from "@google/genai";
 import { Property } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+let ai: GoogleGenAI | null = null;
+try {
+  const key = process.env.API_KEY || "";
+  if (key) {
+    ai = new GoogleGenAI(key);
+  }
+} catch (e) {
+  console.error("Failed to initialize Gemini AI:", e);
+}
 
 export const searchLiveMarketData = async (
   state: string,
@@ -11,6 +19,9 @@ export const searchLiveMarketData = async (
   lat?: number,
   lng?: number
 ): Promise<{ properties: Property[], insights: string, sources: any[] }> => {
+  if (!ai) {
+    throw new Error("Gemini API key is missing. Please set API_KEY in your environment.");
+  }
   const model = "gemini-2.5-flash";
   
   const query = `SEARCH GOOGLE MAPS AND SEARCH for 10-15 active real estate listings in ${neighborhood ? neighborhood + ', ' : ''}${city}, ${state}, USA. 
