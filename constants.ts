@@ -104,13 +104,25 @@ export const CITY_COORDS: Record<string, [number, number]> = {
   'Nashville': [36.1627, -86.7816],
   'Austin': [30.2672, -97.7431],
   'Houston': [29.7604, -95.3698],
+  'Dallas': [32.7767, -96.7970],
+  'San Antonio': [29.4241, -98.4936],
+  'Fort Worth': [32.7555, -97.3308],
+  'El Paso': [31.7619, -106.4850],
+  'Arlington': [32.7357, -97.1081],
   'Salt Lake City': [40.7608, -111.8910],
   'Burlington': [44.4759, -73.2121],
   'Virginia Beach': [36.8529, -75.9780],
   'Seattle': [47.6062, -122.3321],
   'Charleston_WV': [38.3498, -81.6326],
   'Milwaukee': [43.0389, -87.9065],
-  'Cheyenne': [41.1400, -104.8202]
+  'Cheyenne': [41.1400, -104.8202],
+  'Sacramento': [38.5816, -121.4944],
+  'San Jose': [37.3382, -121.8863],
+  'Tulsa': [36.1540, -95.9928],
+  'Pittsburgh': [40.4406, -79.9959],
+  'Raleigh': [35.7796, -78.6382],
+  'St. Louis': [38.6270, -90.1994],
+  'Kansas City_KS': [39.1141, -94.6275]
 };
 
 export const NEIGHBORHOODS: Record<string, string[]> = {
