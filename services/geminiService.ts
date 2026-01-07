@@ -3,15 +3,15 @@ import { Property } from "../types";
 
 const getAI = (runtimeKey?: string) => {
   // 1. Runtime key passed from UI (e.g. just entered by user)
-  if (runtimeKey) return new GoogleGenAI(runtimeKey);
+  if (runtimeKey) return new GoogleGenAI({ apiKey: runtimeKey });
 
   // 2. Stored key in localStorage (for BYOK)
   const storedKey = typeof localStorage !== 'undefined' ? localStorage.getItem('gemini_api_key') : null;
-  if (storedKey) return new GoogleGenAI(storedKey);
+  if (storedKey) return new GoogleGenAI({ apiKey: storedKey });
 
   // 3. Environment variable (for local dev)
   const envKey = process.env.API_KEY || "";
-  if (envKey) return new GoogleGenAI(envKey);
+  if (envKey) return new GoogleGenAI({ apiKey: envKey });
 
   return null;
 };
