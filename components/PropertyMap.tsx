@@ -9,7 +9,7 @@ interface PropertyMapProps {
   filters: Filters;
 }
 
-const ChangeMapView: React.FC<{ coords: [number, number], zoom?: number }> = ({ coords, zoom = 12 }) => {
+const ChangeMapView: React.FC<{ coords: [number, number], zoom?: number }> = ({ coords, zoom = 11 }) => {
   const map = useMap();
   useEffect(() => {
     // Using flyTo for a smooth animated transition when coordinates change
@@ -17,7 +17,24 @@ const ChangeMapView: React.FC<{ coords: [number, number], zoom?: number }> = ({ 
       duration: 1.5,
       easeLinearity: 0.25
     });
+    
+    // Also invalidate size after a short delay to fix partial rendering/gray tiles
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 400);
+    return () => clearTimeout(timer);
   }, [coords, zoom, map]);
+  return null;
+};
+
+const MapResizer: React.FC = () => {
+  const map = useMap();
+  useEffect(() => {
+    // Fix for the common "gray tiles" / partial load issue in Leaflet
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 100);
+  }, [map]);
   return null;
 };
 
@@ -74,6 +91,7 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, filters }) => {
         <MapContainer center={center} zoom={11} scrollWheelZoom={false} className="rounded-lg">
           <TileLayer attribution='&copy; OpenStreetMap' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           <ChangeMapView coords={center} zoom={11} />
+          <MapResizer />
           {properties.map((property) => (
             <CircleMarker
               key={property.id}
