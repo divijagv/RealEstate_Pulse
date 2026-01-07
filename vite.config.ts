@@ -10,6 +10,6 @@ export default defineConfig({
   build: {
     outDir: 'dist',
   },
-  // If deploying to a sub-path (e.g. github.io/repo-name/), set base to '/repo-name/'
-  base: './'
+  // Set base to repository name for GitHub Pages
+  base: '/RealEstate_Pulse/'
 });
