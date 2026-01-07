@@ -29,7 +29,7 @@ export const searchLiveMarketData = async (
   if (!ai) {
     throw new Error("MISSING_KEY");
   }
-  const model = "gemini-2.5-flash";
+  const model = "gemini-3-flash";
   
   const query = `SEARCH GOOGLE MAPS AND SEARCH for 10-15 active real estate listings in ${neighborhood ? neighborhood + ', ' : ''}${city}, ${state}, USA. 
   
