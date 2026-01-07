@@ -1,0 +1,7 @@
+{
+  "name": "RealEstatePulse: Live US Real Estate Explorer",
+  "description": "A dynamic dashboard for USA real estate exploration using Gemini 2.5 with Google Maps grounding for real-world market data.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
