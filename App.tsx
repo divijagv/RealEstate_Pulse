@@ -118,7 +118,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-[1001] px-6 py-4 flex items-center justify-between shadow-sm">
+      <header className="bg-white/80 backdrop-blur-md border-b border-slate-200/50 sticky top-0 z-[1001] px-6 py-4 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-2">
           <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-200">E</div>
           <div>
@@ -161,9 +161,10 @@ const App: React.FC = () => {
 
       <main className="flex-1 flex flex-col lg:flex-row p-4 lg:p-8 gap-6 max-w-[1800px] mx-auto w-full">
         <aside className="w-full lg:w-80 flex-shrink-0">
-          <FilterPanel filters={filters} setFilters={setFilters} />
-          
-          <div className="mt-6 p-4 bg-white rounded-xl border border-slate-100">
+          <div className="sticky top-24 space-y-6">
+            <FilterPanel filters={filters} setFilters={setFilters} />
+            
+            <div className="p-4 bg-white/60 backdrop-blur-sm rounded-xl border border-white/40 shadow-sm">
             <h4 className="text-xs font-bold text-slate-400 uppercase mb-3">Grounding Data</h4>
             <div className="space-y-2">
               {sources.length > 0 ? sources.map((s, i) => {
