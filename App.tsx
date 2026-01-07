@@ -6,6 +6,7 @@ import { Property, Filters, MarketStats } from './types';
 import StatsCard from './components/StatsCard';
 import FilterPanel from './components/FilterPanel';
 import PropertyMap from './components/PropertyMap';
+import ApiKeyModal from './components/ApiKeyModal';
 import { searchLiveMarketData } from './services/geminiService';
 
 const App: React.FC = () => {
@@ -23,6 +24,7 @@ const App: React.FC = () => {
   const [sources, setSources] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Automatically refresh properties from mock data when city/state changes
   useEffect(() => {
@@ -52,7 +54,8 @@ const App: React.FC = () => {
         filters.city, 
         filters.neighborhood === 'All' ? '' : filters.neighborhood,
         userLocation?.lat,
-        userLocation?.lng
+        userLocation?.lng,
+        localStorage.getItem('gemini_api_key') || undefined
       );
       
       if (result.properties.length > 0) {
@@ -62,9 +65,13 @@ const App: React.FC = () => {
         setAiInsight("Model grounding complete, but no structured property rows were extracted. See citations for source links.");
       }
       setSources(result.sources);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setAiInsight("The market search failed. Please refine your selection or try again.");
+      if (err.message === "MISSING_KEY" || err.message?.includes("API key")) {
+        setErrorMessage("MISSING_KEY");
+      } else {
+        setAiInsight("The market search failed. Please refine your selection or try again.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -122,7 +129,17 @@ const App: React.FC = () => {
             </p>
           </div>
         </div>
+
         <div className="flex items-center gap-4">
+           {/* Settings Button */}
+           <button 
+             onClick={() => setErrorMessage("CONFIGURE_KEY")} // Quick hack to open modal
+             className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-indigo-600 transition-all"
+             title="Configure API Key"
+           >
+             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+           </button>
+
            <button 
             onClick={handleLiveSearch}
             disabled={isLoading}
@@ -135,6 +152,12 @@ const App: React.FC = () => {
           </button>
         </div>
       </header>
+
+      <ApiKeyModal 
+        isOpen={errorMessage === "CONFIGURE_KEY" || errorMessage === "MISSING_KEY"}
+        onClose={() => setErrorMessage(null)}
+        onSave={() => setErrorMessage(null)}
+      />
 
       <main className="flex-1 flex flex-col lg:flex-row p-4 lg:p-8 gap-6 max-w-[1800px] mx-auto w-full">
         <aside className="w-full lg:w-80 flex-shrink-0">

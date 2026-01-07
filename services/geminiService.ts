@@ -1,26 +1,33 @@
-
 import { GoogleGenAI } from "@google/genai";
 import { Property } from "../types";
 
-let ai: GoogleGenAI | null = null;
-try {
-  const key = process.env.API_KEY || "";
-  if (key) {
-    ai = new GoogleGenAI(key);
-  }
-} catch (e) {
-  console.error("Failed to initialize Gemini AI:", e);
-}
+const getAI = (runtimeKey?: string) => {
+  // 1. Runtime key passed from UI (e.g. just entered by user)
+  if (runtimeKey) return new GoogleGenAI(runtimeKey);
+
+  // 2. Stored key in localStorage (for BYOK)
+  const storedKey = typeof localStorage !== 'undefined' ? localStorage.getItem('gemini_api_key') : null;
+  if (storedKey) return new GoogleGenAI(storedKey);
+
+  // 3. Environment variable (for local dev)
+  const envKey = process.env.API_KEY || "";
+  if (envKey) return new GoogleGenAI(envKey);
+
+  return null;
+};
 
 export const searchLiveMarketData = async (
   state: string,
   city: string,
   neighborhood: string,
   lat?: number,
-  lng?: number
+  lng?: number,
+  apiKey?: string
 ): Promise<{ properties: Property[], insights: string, sources: any[] }> => {
+  const ai = getAI(apiKey);
+  
   if (!ai) {
-    throw new Error("Gemini API key is missing. Please set API_KEY in your environment.");
+    throw new Error("MISSING_KEY");
   }
   const model = "gemini-2.5-flash";
   
